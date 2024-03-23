@@ -5,7 +5,12 @@ import {
   extractFiles,
 } from '../utils';
 
-import type { AnyVariables, GraphQLRequest, Operation } from '../types';
+import {
+  RNFile,
+  type AnyVariables,
+  type GraphQLRequest,
+  type Operation,
+} from '../types';
 
 /** Abstract definition of the JSON data sent during GraphQL HTTP POST requests. */
 export interface FetchBody {
@@ -119,7 +124,13 @@ const serializeBody = (
         })
       );
       let index = 0;
-      for (const file of files.values()) form.append(`${index++}`, file);
+      for (const file of files.values()) {
+        if (file instanceof RNFile) {
+          form.append(`${index++}`, file as any);
+        } else {
+          form.append(`${index++}`, file);
+        }
+      }
       return form;
     }
     return json;
