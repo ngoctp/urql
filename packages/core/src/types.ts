@@ -875,3 +875,19 @@ export type DebugEvent<T extends keyof DebugEventTypes | string = string> =
     timestamp: number;
     source: string;
   };
+
+/**
+ * A wrapper for a file that can be uploaded in a GraphQL mutation in React Native.
+ * @see {@link https://github.com/facebook/react-native/blob/main/packages/react-native/Libraries/Network/FormData.js} for the React Native FormData spec.
+ */
+export class RNFile {
+  uri: string;
+  name?: string;
+  type?: string;
+
+  constructor(uri: string, name?: string, type?: string) {
+    this.uri = uri;
+    this.name = name;
+    this.type = type;
+  }
+}

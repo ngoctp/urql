@@ -1,4 +1,6 @@
-export type FileMap = Map<string, File | Blob>;
+import { RNFile } from '../types';
+
+export type FileMap = Map<string, File | Blob | RNFile>;
 
 const seen = new Set();
 const cache = new WeakMap();
@@ -57,8 +59,12 @@ const extract = (map: FileMap, path: string, x: any) => {
   } else if (Array.isArray(x)) {
     for (let i = 0, l = x.length; i < l; i++)
       extract(map, `${path}.${i}`, x[i]);
-  } else if (x instanceof FileConstructor || x instanceof BlobConstructor) {
-    map.set(path, x as File | Blob);
+  } else if (
+    x instanceof FileConstructor ||
+    x instanceof BlobConstructor ||
+    x instanceof RNFile
+  ) {
+    map.set(path, x as File | Blob | RNFile);
   } else {
     seen.add(x);
     for (const key of Object.keys(x)) extract(map, `${path}.${key}`, x[key]);
@@ -93,6 +99,7 @@ export const extractFiles = (x: any): FileMap => {
   if (
     FileConstructor !== NoopConstructor ||
     BlobConstructor !== NoopConstructor
+    // check for React Native File
   ) {
     seen.clear();
     extract(map, 'variables', x);
